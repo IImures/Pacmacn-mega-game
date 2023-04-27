@@ -6,7 +6,7 @@ public class Window extends JFrame {
         add(new MenuWindow().mainPanel);
 
         pack();
-        setResizable(false);
+        setResizable(true);
         setLocationRelativeTo(null);
         setVisible(true);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
