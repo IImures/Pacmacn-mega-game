@@ -13,7 +13,11 @@ public class MenuWindow extends JFrame {
         //JPanel mainPanel = new JPanel();
 
         ImageIcon img = new ImageIcon("img/MainMenuBG.jpg");
-        mainPanel = new JLabel(img);
+        mainPanel = new JLabel(img){
+            public void paintComponent(Graphics g) {
+                g.drawImage(img.getImage(), 0, 0, getWidth(), getHeight(), null);// draw the image
+            }
+        };
         //mainPanel.setBounds(0,0,500,500);
 
         mainPanel.setLayout(new GridBagLayout());
@@ -22,17 +26,33 @@ public class MenuWindow extends JFrame {
         gbc.gridwidth = GridBagConstraints.REMAINDER;
         gbc.anchor = GridBagConstraints.NORTH;
 
-        mainPanel.add(new JLabel("<html><h1><strong><i>PACman MegaGame</i></strong></h1><hr></html>"), gbc);
+        JLabel title = new JLabel("PACMAN MEGAGAME");
+        title.setFont(new Font("Chalkboard", Font.BOLD,27));
+        title.setForeground(Color.magenta);
+        title.setPreferredSize(new Dimension(275,50));
+
+        mainPanel.add(title, gbc);
 
 
         JPanel buttons = new JPanel(new GridBagLayout());
 
         JButton startGame = new JButton("Start Game");
-        //startGame.setSize(100,100);
+        startGame.setPreferredSize(new Dimension(150, 50));
+        startGame.setOpaque(false);
+        startGame.setContentAreaFilled(false);
+        startGame.setBorderPainted(false);
+
         JButton score = new JButton("Score");
-        //score.setSize(100,100);
+        score.setPreferredSize(new Dimension(100, 50));
+        score.setOpaque(false);
+        score.setContentAreaFilled(false);
+        score.setBorderPainted(false);
+
         JButton exit = new JButton("Exit");
-        //exit.setSize(100,100);
+        exit.setPreferredSize(new Dimension(100, 50));
+        exit.setOpaque(false);
+        exit.setContentAreaFilled(false);
+        exit.setBorderPainted(false);
 
         buttons.add(startGame);
         buttons.add(score);
@@ -50,14 +70,7 @@ public class MenuWindow extends JFrame {
         mainPanel.add(score, gbc);
         mainPanel.add(exit, gbc);
         mainPanel.add(buttons, gbc);
-        //mainPanel.setBounds(50,50,300,300);
-        //mainPanel.add(mainPanel,gbc);
-
-        //add(mainPanel);
-        //add(mainPanel);
-
-
-        //setSize(600,550);
+        mainPanel.setPreferredSize(new Dimension(640,480));
 
     }
 }
