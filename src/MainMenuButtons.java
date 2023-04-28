@@ -5,7 +5,7 @@ import java.awt.event.ActionListener;
 
 public class MainMenuButtons extends JPanel {
 
-    public MainMenuButtons(JLabel mainPanel){
+    public MainMenuButtons(JLabel mainPanel, JFrame window){
 
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.gridwidth = GridBagConstraints.REMAINDER;
@@ -28,6 +28,19 @@ public class MainMenuButtons extends JPanel {
         exit.setOpaque(false);
         exit.setContentAreaFilled(false);
         exit.setBorderPainted(false);
+
+
+        score.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                JPanel scoreMenu = new ScoreMenu(window).getScoreMenu();
+                window.remove(mainPanel);
+                window.repaint();
+                window.add(scoreMenu);
+                window.setSize(new Dimension(640,480));
+
+            }
+        });
 
         exit.addActionListener(new ActionListener() {
             @Override

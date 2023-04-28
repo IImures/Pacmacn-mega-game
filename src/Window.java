@@ -1,9 +1,12 @@
 import javax.swing.*;
 
 public class Window extends JFrame {
+
+    private JPanel scoreMenu;
     public Window(){
 
-        add(new MenuWindow().mainPanel);
+
+        add(new MenuWindow(this).getMainPanel());
 
         pack();
         setResizable(true);

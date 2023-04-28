@@ -2,11 +2,12 @@ import javax.swing.*;
 import java.awt.*;
 
 
-public class MenuWindow extends JFrame {
-    public JLabel mainPanel;
+public class MenuWindow extends JPanel {
+    private JLabel mainPanel;
+    private JFrame window;
 
-    public MenuWindow(){
-
+    public MenuWindow(JFrame window){
+        this.window = window;
         ImageIcon img = new ImageIcon("img/MainMenuBG.jpg");
         mainPanel = new JLabel(img){
             public void paintComponent(Graphics g) {
@@ -26,9 +27,12 @@ public class MenuWindow extends JFrame {
         title.setPreferredSize(new Dimension(275,50));
 
         mainPanel.add(title, gbc);
-        new MainMenuButtons(mainPanel);
+        new MainMenuButtons(mainPanel, window);
 
         mainPanel.setPreferredSize(new Dimension(640,480));
+    }
 
+    public JLabel getMainPanel(){
+        return mainPanel;
     }
 }
