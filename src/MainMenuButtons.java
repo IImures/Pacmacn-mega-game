@@ -17,18 +17,20 @@ public class MainMenuButtons extends JPanel {
         startGame.setContentAreaFilled(false);
         startGame.setBorderPainted(false);
 
+        startGame.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                SwingUtilities.invokeLater(()-> new GameWindow(window));
+                window.setVisible(false);
+
+            }
+        });
+
         JButton score = new JButton("Score");
         score.setPreferredSize(new Dimension(100, 50));
         score.setOpaque(false);
         score.setContentAreaFilled(false);
         score.setBorderPainted(false);
-
-        JButton exit = new JButton("Exit");
-        exit.setPreferredSize(new Dimension(100, 50));
-        exit.setOpaque(false);
-        exit.setContentAreaFilled(false);
-        exit.setBorderPainted(false);
-
 
         score.addActionListener(new ActionListener() {
             @Override
@@ -42,12 +44,20 @@ public class MainMenuButtons extends JPanel {
             }
         });
 
+        JButton exit = new JButton("Exit");
+        exit.setPreferredSize(new Dimension(100, 50));
+        exit.setOpaque(false);
+        exit.setContentAreaFilled(false);
+        exit.setBorderPainted(false);
+
+
         exit.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 System.exit(0);
             }
         });
+
 
         mainPanel.add(startGame, gbc);
         mainPanel.add(score, gbc);
