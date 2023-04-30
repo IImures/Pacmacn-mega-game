@@ -8,7 +8,6 @@ public class MoveContol extends KeyAdapter {
     private Entity pacman;
 
     public MoveContol(Entity ent){
-        System.out.println("KeyPressed");
         pacman = ent;
     }
 
@@ -20,7 +19,6 @@ public class MoveContol extends KeyAdapter {
     @Override
     public void keyPressed(KeyEvent e) {
         int key = e.getKeyCode();
-        System.out.println("KeyPressed");
         if(key == KeyEvent.VK_A){
             pacman.setxVelocity(-1);
             pacman.setyVelocity(0);
