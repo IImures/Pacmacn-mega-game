@@ -1,4 +1,5 @@
 import javax.swing.*;
+import java.awt.*;
 
 
 public class GameWindow extends JFrame {
@@ -26,8 +27,10 @@ public class GameWindow extends JFrame {
 //        panel.addKeyListener(new MoveContol(pacman2));
 //
 //        add(panel);
+        setLayout(new BorderLayout());
         Level level = new Level();
-        add(level);
+
+        add(level, BorderLayout.CENTER);
 
         setSize(500, 500);
 

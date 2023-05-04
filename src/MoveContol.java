@@ -18,6 +18,7 @@ public class MoveContol extends KeyAdapter {
     @Override
     public void keyPressed(KeyEvent e) {
         int key = e.getKeyCode();
+
         if(key == KeyEvent.VK_A){
             pacman.setxVelocity(-1);
             pacman.setyVelocity(0);

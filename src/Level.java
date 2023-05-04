@@ -6,8 +6,12 @@ public class Level extends JPanel {
     private int height = 100;
     private int BLOCK_SIZE = 16;
 
-    private Entity pacman1;
-    private Entity pacman2;
+    private Pacman pacman;
+    private Ghost[] ghosts;
+    private int lives;
+    private JPanel livesPanel;
+
+    private JPanel board;
 //    private JFrame window;
 //
 //    public Level(JFrame window){
@@ -26,31 +30,55 @@ public class Level extends JPanel {
 //        setVisible(true);
 //    }
 
-    public Level(){
 
+    public Level(){
+        makeLives();
+
+        board = new JPanel();
+        board.setSize(new Dimension(wight * BLOCK_SIZE, height * BLOCK_SIZE));
+
+        ghosts = new Ghost[4];
+        pacman = new Pacman(board, 50, 50);
+
+        board.setLayout(new BorderLayout());
         setLayout(new BorderLayout());
-        setSize(new Dimension(wight * BLOCK_SIZE, height * BLOCK_SIZE));
+
+
+        board.setBorder(BorderFactory.createLineBorder(Color.GREEN));
+        board.setBackground(Color.YELLOW);
+        //------
         setBorder(BorderFactory.createLineBorder(Color.RED));
         setBackground(Color.black);
 
-        pacman1 = new Entity(this, 50, 50, "Test1");
-        pacman2 = new Entity(this, 100, 100, "Test2");
-        pacman1.setBounds(pacman1.getPosition().x, pacman1.getPosition().y, 50, 50);
-        pacman2.setBounds(pacman2.getPosition().x, pacman2.getPosition().y, 50, 50);
+        board.add(pacman);
 
-        add(pacman1);
-        add(pacman2);
+
+
+        add(board, BorderLayout.CENTER);
+        add(livesPanel, BorderLayout.PAGE_END);
 
         setFocusable(true);
-        addKeyListener(new MoveContol(pacman1));
-        addKeyListener(new MoveContol(pacman2));
+        addKeyListener(new MoveContol(pacman));
+
+
+    }
+
+    private void makeLives(){
+        lives = 3;
+        livesPanel = new JPanel();
+        for(int i = 0; i < lives; i++){
+            JLabel live = new JLabel( new ImageIcon("img/heart.png") );
+            livesPanel.add(live);
+        }
     }
 
     @Override
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
-        g.drawImage(pacman1.getCharacter(), pacman1.getPosition().x, pacman1.getPosition().y, null);
-//        g.drawImage(pacman2.getCharacter(), pacman2.getPosition().x, pacman2.getPosition().y, null);
+        //g.drawImage(pacman.getCharacter(), pacman.getPosition().x, pacman.getPosition().y, null);
+        for(int i = 0; i < lives; i++){
+            g.drawImage(new ImageIcon("img/heart.png").getImage(), i + 50, 10, null);
+        }
     }
 
     public JPanel getPanel(){

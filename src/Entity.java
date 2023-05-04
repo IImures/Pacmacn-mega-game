@@ -7,26 +7,25 @@ import java.awt.*;
 //
 //}
 
-public class Entity extends JLabel{
+public abstract class Entity extends JLabel{
 
     private Image character;
     private JPanel window;
 
-    private int xVelocity = 0;
-    private int yVelocity = 0;
-    String name;
+    private int xVelocity = 1;
+    private int yVelocity = 2;
 
     private Point position;
 
-    public Entity(JPanel window){
-        this.window = window;
-        character = new ImageIcon("img/pacman.png").getImage();
-        position = new Point(100,10);
-        setPreferredSize(new Dimension(50,50));
-        move();
-    }
-    public Entity(JPanel window, int x, int y, String name){
-        this.name = name;
+//    public Entity(JPanel window){
+//        this.window = window;
+//        character = new ImageIcon("img/pacman.png").getImage();
+//        position = new Point(100,10);
+//        //sssetPreferredSize(new Dimension(50,50));
+//        move();
+//    }
+    public Entity(JPanel window, int x, int y){
+        //super(new ImageIcon("img/pacman.png"));
         this.window = window;
         character = new ImageIcon("img/pacman.png").getImage();
         position = new Point(x, y);
@@ -39,7 +38,7 @@ public class Entity extends JLabel{
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
 
-        Graphics2D g2d =(Graphics2D) g;
+        Graphics2D g2d = (Graphics2D) g;
 
         g2d.drawImage(character, position.x, position.y, null);
 
@@ -49,12 +48,12 @@ public class Entity extends JLabel{
         Thread thread = new Thread(()->{
             while (true) {
                 try {
-                    System.out.println(name + position);
+                    //System.out.println(name + position);
                     int x_axi = window.getWidth() - character.getWidth(null);
                     int y_axi = window.getHeight() - character.getHeight(null);
                     if(position.x > x_axi) {
                         xVelocity *= 0;
-                        position.x = x_axi;
+                        position.x = x_axi-1;
                     }
                     if(position.x < 1){
                         xVelocity *= 0;
