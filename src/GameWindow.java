@@ -32,7 +32,8 @@ public class GameWindow extends JFrame {
 
         add(level, BorderLayout.CENTER);
 
-        setSize(500, 500);
+        pack();
+        //setSize(500, 500);
 
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setLocationRelativeTo(null);

@@ -10,12 +10,20 @@ import java.awt.*;
 public abstract class Entity extends JLabel{
 
     private Image character;
-    private JPanel window;
+    private JTable window;
 
-    private int xVelocity = 1;
-    private int yVelocity = 2;
+    private int xVelocity = 0;
+    private int yVelocity = 0;
 
     private Point position;
+
+
+    public Entity(String path, int y, int x) {
+        super(new ImageIcon(path));
+        position = new Point(x, y);
+        character = new ImageIcon(path).getImage().getScaledInstance(50, 50,Image.SCALE_SMOOTH);
+    }
+
 
 //    public Entity(JPanel window){
 //        this.window = window;
@@ -24,62 +32,62 @@ public abstract class Entity extends JLabel{
 //        //sssetPreferredSize(new Dimension(50,50));
 //        move();
 //    }
-    public Entity(JPanel window, int x, int y){
-        //super(new ImageIcon("img/pacman.png"));
-        this.window = window;
-        character = new ImageIcon("img/pacman.png").getImage();
-        position = new Point(x, y);
-        setPreferredSize(new Dimension(50,50));
-        setOpaque(false);
-        move();
-    }
-
-    @Override
-    protected void paintComponent(Graphics g) {
-        super.paintComponent(g);
-
-        Graphics2D g2d = (Graphics2D) g;
-
-        g2d.drawImage(character, position.x, position.y, null);
-
-    }
-
-    private void move(){
-        Thread thread = new Thread(()->{
-            while (true) {
-                try {
-                    //System.out.println(name + position);
-                    int x_axi = window.getWidth() - character.getWidth(null);
-                    int y_axi = window.getHeight() - character.getHeight(null);
-                    if(position.x > x_axi) {
-                        xVelocity *= 0;
-                        position.x = x_axi-1;
-                    }
-                    if(position.x < 1){
-                        xVelocity *= 0;
-                        position.x = 1;
-                    }
-                    if(position.y > y_axi){
-                        yVelocity *= 0;
-                        position.y = y_axi;
-                    }
-                    if(position.y < 1){
-                        yVelocity *= 0;
-                        position.y = 1;
-                    }
-
-                    position.x = position.x + xVelocity;
-                    position.y = position.y + yVelocity;
-                    repaint();
-                    Thread.sleep(10);
-                } catch (InterruptedException e) {
-                    throw new RuntimeException(e);
-                }
-            }
-        });
-        thread.start();
-    }
-
+//    public Entity(JTable window, int x, int y){
+//        //super(new ImageIcon("img/pacman.png"));
+//        this.window = window;
+//        character = new ImageIcon("img/MADGhost1.PNG").getImage();
+//        position = new Point(x, y);
+//        setPreferredSize(new Dimension(50,50));
+//        setOpaque(false);
+//        move();
+//    }
+//
+//    @Override
+//    protected void paintComponent(Graphics g) {
+//        super.paintComponent(g);
+//
+//        Graphics2D g2d = (Graphics2D) g;
+//
+//        g2d.drawImage(character, position.x, position.y, null);
+//
+//    }
+//
+//    private void move(){
+//        Thread thread = new Thread(()->{
+//            while (true) {
+//                try {
+//                    //System.out.println(name + position);
+//                    int x_axi = window.getWidth() - character.getWidth(null);
+//                    int y_axi = window.getHeight() - character.getHeight(null);
+//                    if(position.x > x_axi) {
+//                        xVelocity *= 0;
+//                        position.x = x_axi-1;
+//                    }
+//                    if(position.x < 1){
+//                        xVelocity *= 0;
+//                        position.x = 1;
+//                    }
+//                    if(position.y > y_axi){
+//                        yVelocity *= 0;
+//                        position.y = y_axi;
+//                    }
+//                    if(position.y < 1){
+//                        yVelocity *= 0;
+//                        position.y = 1;
+//                    }
+//
+//                    position.x = position.x + xVelocity;
+//                    position.y = position.y + yVelocity;
+//                    repaint();
+//                    Thread.sleep(10);
+//                } catch (InterruptedException e) {
+//                    throw new RuntimeException(e);
+//                }
+//            }
+//        });
+//        thread.start();
+//    }
+//
     public Image getCharacter() {
         return character;
     }
@@ -108,3 +116,4 @@ public abstract class Entity extends JLabel{
         this.position = position;
     }
 }
+
