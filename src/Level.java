@@ -6,7 +6,7 @@ import java.awt.*;
 
 public class Level extends JPanel {
     private Image icon = new ImageIcon("img/heart.png").getImage().getScaledInstance(25,25,Image.SCALE_DEFAULT);
-    private int wight = 11;
+    private int wight = 20;
     private int height = 20;
     private int BLOCK_SIZE = 40;
 
@@ -15,7 +15,8 @@ public class Level extends JPanel {
     private int lives;
     private JPanel livesPanel;
 
-    private JTable board;
+    private JTable boardData;
+    private JTable level;
 //    private JFrame window;
 //
 //    public Level(JFrame window){
@@ -62,10 +63,11 @@ public class Level extends JPanel {
         //add(new Pacman("img/pacman.png"));
         pacman = new Pacman("img/pacman.png", 5, 5);
         ghosts[0] = new Ghost("img/MADGhost1.png", 5,10);
+        //board.addKeyListener(new MoveContol(pacman));
         addKeyListener(new MoveContol(pacman));
 
-        board.setValueAt(pacman, 5 ,5);
-        board.setValueAt(ghosts[0], 5 ,10);
+        boardData.setValueAt(pacman, 5 ,5);
+        boardData.setValueAt(ghosts[0], 5 ,10);
 //        board.setValueAt(new Pacman("img/pacman.png",3, 3), 3 ,3);
         startGame();
         test();
@@ -74,15 +76,18 @@ public class Level extends JPanel {
 
     private void makeBoard(){
         JPanel panel = new JPanel();
-        board = new JTable();
-        board.setModel(new Board(new Object[height][wight], null));
+        boardData = new JTable();
+        boardData.setModel(new Board(new Object[height][wight], null));
+        boardData.setFocusable(false);
+        boardData.setRowSelectionAllowed(false);
+
 
         //board.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
 
-        board.setRowHeight(BLOCK_SIZE);
-        TableColumnModel columnModel = board.getColumnModel();
+        boardData.setRowHeight(BLOCK_SIZE);
+        TableColumnModel columnModel = boardData.getColumnModel();
 
-        for(int i = 0; i < board.getColumnCount(); i++){
+        for(int i = 0; i < boardData.getColumnCount(); i++){
             TableColumn imageColumn = columnModel.getColumn(i);
             imageColumn.setCellRenderer(new ImageRenderer());
             columnModel.getColumn(i).setPreferredWidth(BLOCK_SIZE);
@@ -91,13 +96,14 @@ public class Level extends JPanel {
         //JScrollPane scrollPane = new JScrollPane(board);
         //add(scrollPane, BorderLayout.CENTER);
 
-        board.setBorder(BorderFactory.createLineBorder(Color.GREEN));
-        board.setBackground(Color.black);
+        boardData.setBorder(BorderFactory.createLineBorder(Color.GREEN));
+        boardData.setBackground(Color.black);
 
-        panel.add(board);
-        board.setFocusable(true);
-        panel.setFocusable(true);
+        panel.add(boardData);
+        panel.setFocusable(false);
         add(panel);
+
+        new MazeMaker(50, 50).makeMaze();
 
     }
 
@@ -161,7 +167,9 @@ public class Level extends JPanel {
         Thread thread = new Thread(()->{
             try {
                 while (true) {
+
                     movePacman();
+
                     Thread.sleep(500);
                 }
             } catch (InterruptedException e) {
@@ -172,21 +180,21 @@ public class Level extends JPanel {
     }
 
     private void movePacman(){
-        int x_axi = board.getColumnCount() - 1;
-        int y_axi = board.getRowCount() - 1;
+        int x_axi = boardData.getColumnCount() - 1;
+        int y_axi = boardData.getRowCount() - 1;
 
         int tmp_X = pacman.getxVelocity() + pacman.getPosition().x;
         int tmp_Y = pacman.getyVelocity() + pacman.getPosition().y;
-
-        if(board.getValueAt(tmp_Y, tmp_X) instanceof Ghost){
+        try{
+        if(boardData.getValueAt(tmp_Y, tmp_X) instanceof Ghost){
             System.out.println("KNNNNKNKN");
             pacman.setyVelocity(0);
             pacman.setxVelocity(0);
         }else {
-            board.setValueAt(null, pacman.getPosition().y, pacman.getPosition().x);
+            boardData.setValueAt(null, pacman.getPosition().y, pacman.getPosition().x);
             pacman.getPosition().x = pacman.getxVelocity() + pacman.getPosition().x;
             pacman.getPosition().y = pacman.getyVelocity() + pacman.getPosition().y;
-            board.setValueAt(pacman, pacman.getPosition().y, pacman.getPosition().x);
+            boardData.setValueAt(pacman, pacman.getPosition().y, pacman.getPosition().x);
             if( pacman.getPosition().x >= x_axi){
                 pacman.setxVelocity(0);
             }
@@ -200,7 +208,10 @@ public class Level extends JPanel {
                 pacman.setyVelocity(0);
             }
         }
-        board.repaint();
+        boardData.repaint();
+    }catch (ArrayIndexOutOfBoundsException ex){
+            System.out.println(ex);
+        }
     }
 
     public JPanel getPanel(){

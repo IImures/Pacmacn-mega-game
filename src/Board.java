@@ -25,6 +25,11 @@ public class Board extends AbstractTableModel {
     }
 
     @Override
+    public boolean isCellEditable(int rowIndex, int columnIndex) {
+        return false;
+    }
+
+    @Override
     public int getRowCount() {
         return board.length;
     }
