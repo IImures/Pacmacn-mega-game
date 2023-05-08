@@ -56,17 +56,17 @@ public class MazeMaker {
 
     private boolean r_makePath(Point current){
         visited.add(current);
-        while (hasNext(current)){
+        //while (hasNext(current)){
+        for(int i = 0; i < 2 && hasNext(current); i++){
             Point next = checkNext(current);
             if(next != null && isVisited(next)){
-                maze[current.y][current.x] = 1;
-                visited.add(current);
+                maze[current.x][current.y] = 1;
                 r_makePath(next);
             }else{
                 return false;
             }
         }
-        return false;
+        return true;
     }
 
     private boolean isVisited(Point target){
@@ -108,7 +108,7 @@ public class MazeMaker {
         for (int i = 0; i < n; i++) {
             Point c = options[i];
 
-            boolean good = c.x >= 0 && c.x < height && c.y >= 0 && c.y < width && (int)maze[c.x][c.y] != 2 && isVisited(c);
+            boolean good = c.x >= 0 && c.x < height && c.y >= 0 && c.y < width && maze[c.x][c.y] == 0;
             goodIndices[i] = good;
 
             if (good)

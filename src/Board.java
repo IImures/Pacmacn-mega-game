@@ -64,7 +64,7 @@ class ImageRenderer extends DefaultTableCellRenderer {
         // If the value is an ImageIcon, set it as the icon for the label
         if (value instanceof Entity) {
             setIcon(((Entity) value).getIcon());
-            setBorder(BorderFactory.createEmptyBorder(5, -5, 5, 5));
+            setBorder(BorderFactory.createEmptyBorder(1,-7,1,-5));
         }else {
             // Clear the icon from the label
             setIcon(null);

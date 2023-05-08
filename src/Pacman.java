@@ -1,4 +1,5 @@
-import javax.swing.*;
+
+import java.awt.*;
 
 public class Pacman extends Entity{
 
@@ -9,4 +10,8 @@ public class Pacman extends Entity{
     public Pacman(String path, int y, int x){
         super(path,y ,x);
     }
+    public Pacman(Image img, int y, int x){
+        super(img,y ,x);
+    }
 }
+

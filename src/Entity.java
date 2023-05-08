@@ -10,7 +10,7 @@ import java.awt.*;
 public abstract class Entity extends JLabel{
 
     private Image character;
-    private JTable window;
+    private boolean isSolid = false;
 
     private int xVelocity = 0;
     private int yVelocity = 0;
@@ -20,9 +20,30 @@ public abstract class Entity extends JLabel{
 
     public Entity(String path, int y, int x) {
         super(new ImageIcon(path));
+        setOpaque(true);
         position = new Point(x, y);
-        character = new ImageIcon(path).getImage().getScaledInstance(50, 50,Image.SCALE_SMOOTH);
+        character = new ImageIcon(path).getImage().getScaledInstance(40, 40,Image.SCALE_FAST);
+        //setBounds(0,0, 50,50);
+        setAlignmentX(CENTER_ALIGNMENT);
     }
+    public Entity(Image img, int y, int x) {
+        super(new ImageIcon(img));
+        setOpaque(true);
+        position = new Point(x, y);
+        character = img;
+        //setBounds(0,0, 50,50);
+        setAlignmentX(CENTER_ALIGNMENT);
+    }
+    public Entity(String path, int y, int x, boolean isSolid) {
+        super(new ImageIcon(path));
+        setOpaque(true);
+        position = new Point(x, y);
+        character = new ImageIcon(path).getImage().getScaledInstance(40, 40,Image.SCALE_SMOOTH);
+        this.isSolid = isSolid;
+        //setBounds(0,0, 50,50);
+        setAlignmentX(CENTER_ALIGNMENT);
+    }
+
 
 
 //    public Entity(JPanel window){
@@ -92,6 +113,10 @@ public abstract class Entity extends JLabel{
         return character;
     }
 
+    public void setCharacter(Image character) {
+        this.character = character;
+    }
+
     public int getxVelocity() {
         return xVelocity;
     }
@@ -114,6 +139,9 @@ public abstract class Entity extends JLabel{
 
     public void setPosition(Point position) {
         this.position = position;
+    }
+    public boolean getIsSolid(){
+        return isSolid;
     }
 }
 
