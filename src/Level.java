@@ -1,20 +1,24 @@
 import javax.swing.*;
-import javax.swing.table.TableColumn;
-import javax.swing.table.TableColumnModel;
+import javax.swing.table.*;
 import java.awt.*;
+import java.awt.event.ComponentEvent;
+import java.awt.event.ComponentListener;
 
 
 public class Level extends JPanel {
     private Image icon = new ImageIcon("img/heart.png").getImage().getScaledInstance(25,25,Image.SCALE_DEFAULT);
-    private int wight = 34;
+    private int wight = 25;
     private int height = 25;
-    private int BLOCK_SIZE = 40;
+    private int BLOCK_SIZE = 32;
 
     private Pacman pacman;
     private Ghost[] ghosts;
     private int lives;
+    private JLabel score;
     private JPanel livesPanel;
     private JPanel boardPanel;
+
+    private AbstractTableModel abstractTableModel;
 
     private JTable boardData;
     private JTable level;
@@ -39,6 +43,28 @@ public class Level extends JPanel {
 
     public Level(){
         setLayout(new BorderLayout());
+        addComponentListener(new ComponentListener() {
+            @Override
+            public void componentResized(ComponentEvent e) {
+                resize();
+                repaint();
+            }
+
+            @Override
+            public void componentMoved(ComponentEvent e) {
+
+            }
+
+            @Override
+            public void componentShown(ComponentEvent e) {
+
+            }
+
+            @Override
+            public void componentHidden(ComponentEvent e) {
+
+            }
+        });
         pacman = new Pacman("img/pacman.png", 5, 5);
         addKeyListener(new MoveContol(pacman));
         makeLives();
@@ -82,10 +108,15 @@ public class Level extends JPanel {
     }
 
     private void makeBoard(){
+        boardPanel = new JPanel();
+        boardPanel.setBackground(Color.black);
+
         boardData = new JTable();
-        boardData.setModel(new Board(new Object[height][wight], null));
-        boardData.setFocusable(false);
+        boardData.setDefaultRenderer(Object.class, new ImageRenderer());
+        abstractTableModel = new Board(new Object[height][wight], null);
+        boardData.setModel(abstractTableModel);
         boardData.setRowSelectionAllowed(false);
+        boardData.setIntercellSpacing(new Dimension(0, 0));
 
 
         //board.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
@@ -107,57 +138,20 @@ public class Level extends JPanel {
         for(int y = 0; y < boardData.getColumnCount(); y++)
             for(int x = 0; x < boardData.getRowCount(); x++){
                 if(maze[y][x] == 2 || maze[y][x] == 0 )
-                    boardData.setValueAt(new Tile("img/Tile.png", y, x , true), x, y);
+                    boardData.setValueAt(new Tile("img/Tile.png", y, x , true, false), x, y);
                 else
-                    boardData.setValueAt(new Tile("img/Black.png", y,x, false), x, y);
+                    boardData.setValueAt(new Tile("img/WhiteDot.png", y,x, false, true), x, y);
             }
-        boardData.setBackground(Color.black);
         boardData.setValueAt(pacman, 5,5);
-        boardPanel = new JPanel(){
-            @Override
-            protected void paintComponent(Graphics g) {
-                super.paintComponent(g);
-                int xPos = 0;
-                int yPos = 0;
-                int col = 0;
-                int row =0;
-                while(col < boardData.getColumnCount() && row < boardData.getRowCount()){
-                    Entity ent = (Entity) boardData.getValueAt(row, col);
-                    g.drawImage(ent.getCharacter(), xPos, yPos, null);
-                    col++;
-                    xPos +=BLOCK_SIZE;
-                    if(col == boardData.getColumnCount()){
-                        col = 0;
-                        xPos = 0;
-                        row++;
-                        yPos += BLOCK_SIZE;
-                    }
-                }
-            }
-//            @Override
-//            protected void paintComponent(Graphics g) {
-//                super.paintComponent(g);
-//                int xPos = 0;
-//                int yPos = 0;
-//                for(int x = 0; x < boardData.getRowCount(); x++){
-//                    for(int y = 0; y < boardData.getColumnCount(); y++){
-//                        Entity ent = (Entity) boardData.getValueAt(x,y);
-//                        g.drawImage(ent.getCharacter(), xPos,yPos, null);
-//                        xPos += BLOCK_SIZE;
-//                    }
-//                    yPos +=BLOCK_SIZE;
-//                }
-//            }
-        };
-
         //boardPanel.add(pacman);
 
-        boardData.setVisible(false);
+        boardData.setVisible(true);
+        boardData.setFocusable(false);
 
         boardPanel.add(boardData);
 
-        boardPanel.setFocusable(false);
-        boardPanel.setBorder(BorderFactory.createLineBorder(Color.BLUE));
+//        boardPanel.setFocusable(false);
+//        boardPanel.setBorder(BorderFactory.createLineBorder(Color.BLUE));
 
         add(boardPanel);
         //boardPanel.repaint();
@@ -167,10 +161,9 @@ public class Level extends JPanel {
         lives = 3;
         livesPanel = new JPanel();
         livesPanel.setFocusable(true);
-        Image icon = new ImageIcon("img/heart.png").getImage().getScaledInstance(30,30,Image.SCALE_SMOOTH);
+        Image icon = new ImageIcon("img/heart.png").getImage().getScaledInstance(32,32,Image.SCALE_SMOOTH);
         ImageIcon heart = new ImageIcon(icon);
 //        livesPanel = new JPanel(new FlowLayout()){
-//            private Image icon = new ImageIcon("img/heart.png").getImage().getScaledInstance(25,25,Image.SCALE_DEFAULT);
 //            @Override
 //            protected void paintComponent(Graphics g) {
 //                super.paintComponent(g);
@@ -184,11 +177,14 @@ public class Level extends JPanel {
             JLabel live = new JLabel(heart);
             livesPanel.add(live);
         }
+        score = new JLabel("0");
+        livesPanel.add(new JLabel("Your score: "));
+        livesPanel.add(score);
+
     }
 
-    public void paintComponent(Graphics g) {
-        try {
-            super.paintComponent(g);
+    public void resize() {
+        //try {
             int availableWidth = boardData.getParent().getWidth();
             int availableHeight = boardData.getParent().getHeight();
             int columnCount = boardData.getColumnCount();
@@ -197,10 +193,13 @@ public class Level extends JPanel {
             int rowSize = availableHeight / rowCount;
             BLOCK_SIZE = Math.min(rowSize, columnSize);
 
-            pacman.setCharacter(pacman.getCharacter().getScaledInstance(BLOCK_SIZE, BLOCK_SIZE, Image.SCALE_SMOOTH));
-//            pacman = new Pacman(pacman.getCharacter().getScaledInstance(BLOCK_SIZE, BLOCK_SIZE, Image.SCALE_SMOOTH), pacman.getPosition().y, pacman.getPosition().x);
-            boardData.setRowHeight(BLOCK_SIZE);
+            //pacman.setCharacter(pacman.getCharacter().getScaledInstance(BLOCK_SIZE, BLOCK_SIZE, Image.SCALE_SMOOTH));
+            //pacman.setBounds(0,0, BLOCK_SIZE,BLOCK_SIZE);
+            //pacman = new Pacman(pacman.getCharacter().getScaledInstance(BLOCK_SIZE, BLOCK_SIZE, Image.SCALE_SMOOTH), pacman.getPosition().y, pacman.getPosition().x);
+            //pacman = pacman;
+            //addKeyListener(new MoveContol(pacman));
 
+            boardData.setRowHeight(BLOCK_SIZE);
 
             TableColumnModel columnModel = boardData.getColumnModel();
             for (int i = 0; i < columnCount; i++) {
@@ -208,9 +207,15 @@ public class Level extends JPanel {
                 column.setCellRenderer(new ImageRenderer());
                 column.setPreferredWidth(BLOCK_SIZE);
             }
-        }catch (IllegalArgumentException ex) {
-            System.out.println(ex);
-        }
+            for(int y = 0; y < boardData.getColumnCount(); y++)
+                for(int x = 0; x < boardData.getRowCount(); x++){
+                    Entity ent = (Entity) boardData.getValueAt(x,y);
+                    ent.reScale(BLOCK_SIZE + 2);
+                    //ent.setCharacter(ent.getCharacter().getScaledInstance(BLOCK_SIZE + 1, BLOCK_SIZE + 1, Image.SCALE_REPLICATE));
+                }
+       // }catch (IllegalArgumentException ex) {
+          //  System.out.println(ex);
+        //}
     }
 
 
@@ -262,7 +267,7 @@ public class Level extends JPanel {
 
         int tmp_X = pacman.getxVelocity() + pacman.getPosition().x;
         int tmp_Y = pacman.getyVelocity() + pacman.getPosition().y;
-//        try{
+        try{
         System.out.println(tmp_X + "  " + tmp_Y);
         Entity ent = (Entity) boardData.getValueAt(tmp_Y, tmp_X);
         if(ent.getIsSolid()){
@@ -270,7 +275,12 @@ public class Level extends JPanel {
             pacman.setyVelocity(0);
             pacman.setxVelocity(0);
         }else {
-            boardData.setValueAt(ent, pacman.getPosition().y, pacman.getPosition().x);
+            if(ent.getIsEatable()){
+                boardData.setValueAt(new Tile("img/Black.png", pacman.getPosition().y, pacman.getPosition().x, false,false), pacman.getPosition().y, pacman.getPosition().x);
+                score.setText(String.valueOf((Integer.parseInt(score.getText()) + 10)));
+            }else {
+                boardData.setValueAt(ent, pacman.getPosition().y, pacman.getPosition().x);
+            }
             pacman.getPosition().x = pacman.getxVelocity() + pacman.getPosition().x;
             pacman.getPosition().y = pacman.getyVelocity() + pacman.getPosition().y;
             boardData.setValueAt(pacman, pacman.getPosition().y, pacman.getPosition().x);
@@ -287,11 +297,15 @@ public class Level extends JPanel {
                 pacman.setyVelocity(0);
             }
         }
+        livesPanel.repaint();
+        boardData.repaint();
         boardPanel.repaint();
-//    }catch (ArrayIndexOutOfBoundsException ex){
-//            System.out.println(ex);
-//        }
+    }catch (ArrayIndexOutOfBoundsException ex){
+            System.out.println(ex);
+        }
     }
+
+
 
     public JPanel getPanel(){
         return this;
@@ -330,3 +344,41 @@ public class Level extends JPanel {
 //                    boardData.setRowHeight((panel.getHeight() - (getHeight() / BLOCK_SIZE)) / BLOCK_SIZE);
 //                }
 //            }});
+
+//        boardPanel = new JPanel(){
+////            @Override
+////            protected void paintComponent(Graphics g) {
+////                super.paintComponent(g);
+////                int xPos = getWidth()/BLOCK_SIZE;
+////                int yPos = BLOCK_SIZE;
+////                int col = 0;
+////                int row =0;
+////                while(col < boardData.getColumnCount() && row < boardData.getRowCount()){
+////                    Entity ent = (Entity) boardData.getValueAt(row, col);
+////                    Image img = ent.getCharacter();
+////                    g.drawImage(img, xPos, yPos, null);
+////                    col++;
+////                    xPos +=BLOCK_SIZE;
+////                    if(col == boardData.getColumnCount()){
+////                        col = 0;
+////                        xPos = getWidth()/BLOCK_SIZE ;
+////                        row++;
+////                        yPos += BLOCK_SIZE;
+////                    }
+////                }
+////            }
+////            @Override
+////            protected void paintComponent(Graphics g) {
+////                super.paintComponent(g);
+////                int xPos = 0;
+////                int yPos = 0;
+////                for(int x = 0; x < boardData.getRowCount(); x++){
+////                    for(int y = 0; y < boardData.getColumnCount(); y++){
+////                        Entity ent = (Entity) boardData.getValueAt(x,y);
+////                        g.drawImage(ent.getCharacter(), xPos,yPos, null);
+////                        xPos += BLOCK_SIZE;
+////                    }
+////                    yPos +=BLOCK_SIZE;
+////                }
+////            }
+//                };

@@ -10,7 +10,9 @@ import java.awt.*;
 public abstract class Entity extends JLabel{
 
     private Image character;
+    private String path;
     private boolean isSolid = false;
+    private boolean isEatable = false;
 
     private int xVelocity = 0;
     private int yVelocity = 0;
@@ -22,26 +24,17 @@ public abstract class Entity extends JLabel{
         super(new ImageIcon(path));
         setOpaque(true);
         position = new Point(x, y);
-        character = new ImageIcon(path).getImage().getScaledInstance(40, 40,Image.SCALE_FAST);
-        //setBounds(0,0, 50,50);
-        setAlignmentX(CENTER_ALIGNMENT);
+        character = new ImageIcon(path).getImage();
+        this.path = path;
     }
-    public Entity(Image img, int y, int x) {
-        super(new ImageIcon(img));
-        setOpaque(true);
-        position = new Point(x, y);
-        character = img;
-        //setBounds(0,0, 50,50);
-        setAlignmentX(CENTER_ALIGNMENT);
-    }
-    public Entity(String path, int y, int x, boolean isSolid) {
+    public Entity(String path, int y, int x, boolean isSolid, boolean isEatable) {
         super(new ImageIcon(path));
         setOpaque(true);
         position = new Point(x, y);
-        character = new ImageIcon(path).getImage().getScaledInstance(40, 40,Image.SCALE_SMOOTH);
+        character = new ImageIcon(path).getImage();
         this.isSolid = isSolid;
-        //setBounds(0,0, 50,50);
-        setAlignmentX(CENTER_ALIGNMENT);
+        this.isEatable = isEatable;
+        this.path = path;
     }
 
 
@@ -109,13 +102,21 @@ public abstract class Entity extends JLabel{
 //        thread.start();
 //    }
 //
+    public void reScale(int BLOCK_SIZE){
+        Image character = new ImageIcon(path).getImage().getScaledInstance(BLOCK_SIZE, BLOCK_SIZE, Image.SCALE_FAST);
+        setBounds(0,0,BLOCK_SIZE,BLOCK_SIZE);
+        setCharacter(character);
+    }
     public Image getCharacter() {
         return character;
     }
 
     public void setCharacter(Image character) {
         this.character = character;
+        ImageIcon newIcon = new ImageIcon(character);
+        setIcon(newIcon);
     }
+
 
     public int getxVelocity() {
         return xVelocity;
@@ -142,6 +143,9 @@ public abstract class Entity extends JLabel{
     }
     public boolean getIsSolid(){
         return isSolid;
+    }
+    public boolean getIsEatable(){
+        return isEatable;
     }
 }
 
