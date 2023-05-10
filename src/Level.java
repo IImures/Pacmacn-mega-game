@@ -268,10 +268,8 @@ public class Level extends JPanel {
         int tmp_X = pacman.getxVelocity() + pacman.getPosition().x;
         int tmp_Y = pacman.getyVelocity() + pacman.getPosition().y;
         try{
-        System.out.println(tmp_X + "  " + tmp_Y);
         Entity ent = (Entity) boardData.getValueAt(tmp_Y, tmp_X);
         if(ent.getIsSolid()){
-            System.out.println("KNNNNKNKN");
             pacman.setyVelocity(0);
             pacman.setxVelocity(0);
         }else {
