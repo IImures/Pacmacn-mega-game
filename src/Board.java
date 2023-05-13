@@ -1,5 +1,6 @@
 import javax.imageio.ImageIO;
 import javax.swing.*;
+import javax.swing.border.EtchedBorder;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableCellRenderer;
@@ -65,14 +66,15 @@ class ImageRenderer extends DefaultTableCellRenderer {
                                                    boolean isSelected, boolean hasFocus, int row, int column) {
         // Call the parent method to set up the default cell rendering
 
-        Component c= super.getTableCellRendererComponent(table, value, isSelected, false, row, column);
+        //Component c= super.getTableCellRendererComponent(table, value, isSelected, false, row, column);
 //        setHorizontalAlignment(JLabel.CENTER);
 //        setVerticalAlignment(JLabel.CENTER);
-        Entity rendererComponent = (Entity) value;
+        //Entity rendererComponent = (Entity) value;
 //        rendererComponent.setHorizontalAlignment(SwingConstants.CENTER);
 //        rendererComponent.setVerticalAlignment(SwingConstants.CENTER);
-        setBorder(BorderFactory.createEmptyBorder(1,16,1,-1));
+        //setBorder(BorderFactory.createEmptyBorder(1,16,1,-1));
         setIcon(((Entity) value).getIcon());
+        setBorder(BorderFactory.createEmptyBorder());
 
 //        // If the value is an ImageIcon, set it as the icon for the label
 //        if (value instanceof Entity) {

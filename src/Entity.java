@@ -27,15 +27,32 @@ public abstract class Entity extends JLabel{
         character = new ImageIcon(path).getImage();
         this.path = path;
     }
-    public Entity(String path, int y, int x, boolean isSolid, boolean isEatable) {
+
+    public Entity(String path, boolean isSolid, boolean isEatable) {
         super(new ImageIcon(path));
         setOpaque(true);
-        position = new Point(x, y);
         character = new ImageIcon(path).getImage();
         this.isSolid = isSolid;
         this.isEatable = isEatable;
         this.path = path;
     }
+//    public Entity(String path, int y, int x, boolean isSolid, boolean isEatable) {
+//        super(new ImageIcon(path));
+//        setOpaque(true);
+//        position = new Point(x, y);
+//        character = new ImageIcon(path).getImage();
+//        this.isSolid = isSolid;
+//        this.isEatable = isEatable;
+//        this.path = path;
+//    }
+//    public Entity(String path, boolean isSolid, boolean isEatable) {
+//        super(new ImageIcon(path));
+//        setOpaque(true);
+//        character = new ImageIcon(path).getImage();
+//        this.isSolid = isSolid;
+//        this.isEatable = isEatable;
+//        this.path = path;
+//    }
 
 
 
