@@ -1,4 +1,4 @@
----===Player: sss===---
+---===Player: ewrwergs===---
 Attempt 1: Score: 0, Time: 0
 Attempt 2: Score: 2424, Time: 33
 ---======---
@@ -36,4 +36,16 @@ Attempt 3: Score: 310, Time: 17
 Attempt 1: Score: 30, Time: 2
 Attempt 2: Score: 100, Time: 6
 Attempt 3: Score: 190, Time: 10
+---======---
+
+---===Player: Marijeczka===---
+Attempt 1: Score: 99990, Time: 3
+Attempt 2: Score: 210, Time: 11
+Attempt 3: Score: 10, Time: 1
+---======---
+
+---===Player: rwgo[]ewg===---
+Attempt 1: Score: 10, Time: 1
+Attempt 2: Score: 300, Time: 18
+Attempt 3: Score: 100, Time: 6
 ---======---

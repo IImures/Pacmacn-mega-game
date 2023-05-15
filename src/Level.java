@@ -290,48 +290,6 @@ public class Level extends JPanel {
         }
         winOrLose(true);
     }
-//    private void moveGhosts1(){
-//        for(int i = 0; i < ghosts.length; i++){
-//            Ghost ghost = ghosts[i];
-//            System.out.println(i);
-//            int tmp_X = ghost.getxVelocity() + ghost.getPosition().x;
-//            int tmp_Y = ghost.getyVelocity() + ghost.getPosition().y;
-//            Object ent = boardData.getValueAt(tmp_Y, tmp_X);
-//            if (ent instanceof Pacman) {
-//                //died();
-//                isAlive=false;
-//            } else if (ent instanceof Tile && ((Tile) ent).getIsSolid() || ent instanceof Ghost) {
-//                int rand = (int) (Math.random() * 4) + 1;
-//                switch (rand) {
-//                    case 1 -> {
-//                        ghost.setxVelocity(0);
-//                        ghost.setyVelocity(-1);
-//                        System.out.println("1 " + rand);
-//                    }
-//                    case 2 -> {
-//                        ghost.setxVelocity(0);
-//                        ghost.setyVelocity(1);
-//                        System.out.println("2 " + rand);
-//                    }
-//                    case 3 -> {
-//                        ghost.setxVelocity(-1);
-//                        ghost.setyVelocity(0);
-//                        System.out.println("3 " + rand);
-//                    }
-//                    case 4 -> {
-//                        ghost.setxVelocity(1);
-//                        ghost.setyVelocity(0);
-//                        System.out.println("4 " + rand);
-//                    }
-//                }
-//            } else {
-//                boardData.setValueAt(ent, ghost.getPosition().y, ghost.getPosition().x);
-//                ghost.getPosition().x = ghost.getxVelocity() + ghost.getPosition().x;
-//                ghost.getPosition().y = ghost.getyVelocity() + ghost.getPosition().y;
-//                boardData.setValueAt(ghost, ghost.getPosition().y, ghost.getPosition().x);
-//            }
-//        }
-//    }
     private void moveGhosts(){
         for(int i = 0; i < ghosts.length; i++){
             Ghost ghost = ghosts[i];
@@ -413,19 +371,6 @@ public class Level extends JPanel {
             boardData.setValueAt(pacman, pacman.getPosition().y, pacman.getPosition().x);
         }
 
-//            if( pacman.getPosition().x >= x_axi){
-//                pacman.setxVelocity(0);
-//            }
-//            if(pacman.getPosition().x <= 0){
-//                pacman.setxVelocity(0);
-//            }
-//            if(pacman.getPosition().y >= y_axi){
-//                pacman.setyVelocity(0);
-//            }
-//            if(pacman.getPosition().y <= 0){
-//                pacman.setyVelocity(0);
-//            }
-
     }
 
     private void winOrLose(boolean winOrLose){
@@ -444,24 +389,6 @@ public class Level extends JPanel {
         window.setTimeTable(timeTable);
 
         window.askForName();
-//        removeAll();
-//        setBackground(Color.black);
-//
-//        setLayout(new GridBagLayout());
-//
-//        GridBagConstraints gbc = new GridBagConstraints();
-//        gbc.gridwidth = GridBagConstraints.REMAINDER;
-//        gbc.anchor = GridBagConstraints.NORTH;
-//
-//        JTextField nameSpace = new JTextField();
-//
-//        JLabel lable = new JLabel("Write your name and press enter");
-//        lable.setForeground(Color.WHITE);
-//
-//        add(lable);
-//        add(nameSpace);
-//        repaint();
-
     }
 
     private void replacePacman(boolean pacmanPlaced){
@@ -503,16 +430,6 @@ public class Level extends JPanel {
     private void died() {
         isAlive = false;
 
-//        for(int i = 0; i < wight; i++){
-//            for(int j = 0; j < height; j++){
-//                Object ent = boardData.getValueAt(j, i);
-//                if(ent instanceof Ghost)
-//                    boardData.setValueAt(tiles[1], j, i);
-//            }
-//        }
-
-        //stopAll();
-
         removeAll();
         timeTable[3 - lives] = Integer.parseInt(time.getText());
         scoreTable[3 - lives] = Integer.parseInt(score.getText());
@@ -536,6 +453,7 @@ public class Level extends JPanel {
         add(livesPanel, BorderLayout.PAGE_END);
 
         repaint();
+
         setSize(getWidth(), getHeight()+1);
 
         Thread timer = new Thread(()->{

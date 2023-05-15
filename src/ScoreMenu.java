@@ -58,6 +58,7 @@ public class ScoreMenu extends JFrame {
         add(listPanel,BorderLayout.CENTER);
         setVisible(true);
         repaint();
+        setSize(getWidth(), getHeight()+1);
     }
 
     private void readScore(){
