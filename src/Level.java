@@ -19,6 +19,8 @@ public class Level extends JPanel {
     private int lives;
     private JLabel score;
     private JLabel time;
+    private int timeTable[] = new int[3];
+    private int scoreTable[] = new int[3];
     private JPanel livesPanel;
     private JPanel boardPanel;
 
@@ -242,7 +244,6 @@ public class Level extends JPanel {
 
     public void startGame() {
         isAlive = true;
-        //moveGhosts();
         moveGhosts();
         Thread timer = new Thread(()->{
            while (isAlive){
@@ -287,7 +288,7 @@ public class Level extends JPanel {
                     return;
             }
         }
-        win();
+        winOrLose(true);
     }
 //    private void moveGhosts1(){
 //        for(int i = 0; i < ghosts.length; i++){
@@ -427,14 +428,22 @@ public class Level extends JPanel {
 
     }
 
-    private void win(){
+    private void winOrLose(boolean winOrLose){
         removeAll();
+        gameThread = null;
+        ghostThreads = null;
 
+        if(winOrLose)
+            window.setMessage("God Job! input your name and press Enter");
+        else
+            window.setMessage("Nice attempt! Input your name and press Enter");
         window.setScore(score.getText());
         window.setLives(lives);
 
+        window.setScoreTable(scoreTable);
+        window.setTimeTable(timeTable);
+
         window.askForName();
-        gameThread.interrupt();
 //        removeAll();
 //        setBackground(Color.black);
 //
@@ -453,17 +462,6 @@ public class Level extends JPanel {
 //        add(nameSpace);
 //        repaint();
 
-    }
-
-    private synchronized void stopAll(){
-        try {
-            gameThread.wait();
-            System.out.println(3232323);
-            for (Thread ghostThread : ghostThreads) ghostThread.wait();
-            System.out.println(345345);
-        } catch (InterruptedException ex) {
-            ex.getStackTrace();
-        }
     }
 
     private void replacePacman(boolean pacmanPlaced){
@@ -516,8 +514,13 @@ public class Level extends JPanel {
         //stopAll();
 
         removeAll();
-
+        timeTable[3 - lives] = Integer.parseInt(time.getText());
+        scoreTable[3 - lives] = Integer.parseInt(score.getText());
         lives--;
+        if(lives == 0) {
+            winOrLose(false);
+            return;
+        }
         makeLives();
 
         makeBoard();
@@ -540,7 +543,7 @@ public class Level extends JPanel {
             time.setText(count + "");
             while (count != 0){
                 try {
-                    Thread.sleep(1000);
+                    Thread.sleep(10);
                     time.setText(count + 1 + "");
                     count++;
                 } catch (InterruptedException e) {
@@ -555,7 +558,6 @@ public class Level extends JPanel {
         }catch (InterruptedException ex){
             System.out.println("Timer problem");
         }
-        //for(Thread th : ghostThreads) th.start();
     }
 
 

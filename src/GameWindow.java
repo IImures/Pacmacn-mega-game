@@ -4,12 +4,16 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.Arrays;
 
 
 public class GameWindow extends JFrame {
     private JFrame window;
     private Level level;
 
+    private int timeTable[] = new int[3];
+    private int scoreTable[] = new int[3];
+    private String message;
     private String name;
     private String score;
     private int lives;
@@ -65,7 +69,11 @@ public class GameWindow extends JFrame {
                         name = nameSpace.getText();
                     try {
                         FileWriter fileWriter = new FileWriter("Score.txt", true);
-                        fileWriter.write("Player: " + name + ", score: " + score + " lives left: " + lives + "\n");
+                        fileWriter.write("\n---===Player: " + name + "===---\n");
+                        fileWriter.write("Attempt 1: Score: " + scoreTable[0] + ", Time: " + timeTable[0] + "\n");
+                        for(int i = 1; i < scoreTable.length; i++)
+                            if(scoreTable[i] != 0) fileWriter.write("Attempt " + (i+1)  + ": Score: " + scoreTable[i] + ", Time: " + timeTable[i] + "\n");
+                        fileWriter.write("---======---\n");
                         fileWriter.close();
                     } catch (IOException ex) {
                         System.out.println("Error in filewriter");
@@ -82,7 +90,7 @@ public class GameWindow extends JFrame {
             }
         });
 
-        JLabel lable = new JLabel("You WIN!\nWrite your name and press enter");
+        JLabel lable = new JLabel(message);
         lable.setForeground(Color.BLACK);
         lable.setPreferredSize(new Dimension(275, 25));
         lable.setOpaque(false);
@@ -101,5 +109,17 @@ public class GameWindow extends JFrame {
 
     public void setScore(String score) {
         this.score = score;
+    }
+
+    public void setMessage(String message){
+        this.message = message;
+    }
+
+    public void setTimeTable(int[] timeTable) {
+        this.timeTable = timeTable;
+    }
+
+    public void setScoreTable(int[] scoreTable) {
+        this.scoreTable = scoreTable;
     }
 }

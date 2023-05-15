@@ -1,11 +1,39 @@
-Player: Player, score: 50 lives left: 3
-Player: Player Unknown, score: 50 lives left: 3
-Player: WOW, score: 30 lives left: 3
-Player: Waw, score: 40 lives left: 3
-Player: LOL, score: 50 lives left: 3
-Player: Mama, score: 50 lives left: 3
-Player: Player Unknown, score: 50 lives left: 3
-Player: psps, score: 50 lives left: 3
-Player: qwfqrf, score: 40 lives left: 3
-Player: asfdwqf, score: 40 lives left: 3
-Player: Player Unknown, score: 20 lives left: 3
+---===Player: sss===---
+Attempt 1: Score: 0, Time: 0
+Attempt 2: Score: 2424, Time: 33
+---======---
+---===Player: rwfer===---
+Attempt 1: Score: 130, Time: 9
+---======---
+---===Player: rffr===---
+Attempt 1: Score: 340, Time: 20
+Attempt 2: Score: 40, Time: 1
+Attempt 3: Score: 70, Time: 7
+---======---
+---===Player: efrefwfrw===---
+Attempt 1: Score: 30, Time: 3
+Attempt 2: Score: 260, Time: 13
+Attempt 3: Score: 10, Time: 1
+---======---
+---===Player: efvevrv===---
+Attempt 1: Score: 120, Time: 8
+Attempt 2: Score: 90, Time: 4
+Attempt 3: Score: 20, Time: 2
+---======---
+---===Player: gewge===---
+Attempt 1: Score: 70, Time: 5
+Attempt 2: Score: 60, Time: 3
+Attempt 3: Score: 40, Time: 3
+---======---
+
+---===Player: meow===---
+Attempt 1: Score: 10, Time: 1
+Attempt 2: Score: 80, Time: 4
+Attempt 3: Score: 310, Time: 17
+---======---
+
+---===Player: rferwf===---
+Attempt 1: Score: 30, Time: 2
+Attempt 2: Score: 100, Time: 6
+Attempt 3: Score: 190, Time: 10
+---======---

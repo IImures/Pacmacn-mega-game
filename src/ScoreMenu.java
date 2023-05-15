@@ -1,4 +1,5 @@
 import javax.swing.*;
+import javax.swing.event.ListSelectionListener;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -28,11 +29,7 @@ public class ScoreMenu extends JFrame {
 
         setLayout(new BorderLayout());
         readScore();
-        listPanel = new JPanel();
-        listPanel.setBackground(Color.black);
-        list = new JList<>(scoreList);
-        scrollPane = new JScrollPane(list);
-        listPanel.setPreferredSize(new Dimension(320, getHeight()));
+
         exit = new JButton("Return");
         exit.addActionListener(new ActionListener() {
             @Override
@@ -44,20 +41,31 @@ public class ScoreMenu extends JFrame {
             }
         });
 
+        listPanel = new JPanel();
+        listPanel.setBackground(Color.black);
+        list = new JList<>(scoreList);
+        list.setCellRenderer(new MyListCellRenderer());
+        list.setOpaque(false);
+        //list.setForeground(Color.MAGENTA);
+        //list.setFont(list.getFont().deriveFont(16f));
+        scrollPane = new JScrollPane(list);
+        scrollPane.setOpaque(false);
+        scrollPane.setPreferredSize(new Dimension(320, getHeight() - (exit.getHeight()*2 + 5)));
+        scrollPane.setBorder(BorderFactory.createEmptyBorder());
         add(exit, BorderLayout.PAGE_END);
         listPanel.add(scrollPane);
+        listPanel.setOpaque(false);
         add(listPanel,BorderLayout.CENTER);
-        paint(getGraphics());
         setVisible(true);
+        repaint();
     }
 
     private void readScore(){
         try {
             Scanner scanner = new Scanner(new File("Score.txt"));
             while (scanner.hasNextLine()) {
-                String tmp = scanner.nextLine();
-                System.out.println(tmp);
-                scoreList.add(tmp);
+                String line = scanner.nextLine();
+                scoreList.add(line);
             }
         }catch (IOException ex){
             System.out.println("Scanner error");
@@ -71,8 +79,23 @@ public class ScoreMenu extends JFrame {
     @Override
     public void paint(Graphics g) {
         super.paint(g);
-        g.setColor(Color.BLACK);
-        g.drawRect(0,0,getWidth(),getHeight());
         scrollPane.setPreferredSize(new Dimension(320, getHeight() - (exit.getHeight()*2 + 5) ));
+    }
+}
+
+class MyListCellRenderer extends JLabel implements ListCellRenderer{
+
+    MyListCellRenderer(){
+
+    }
+    @Override
+    public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
+
+        setText((String) value);
+        setOpaque(true);
+        setFont(getFont().deriveFont(16f));
+        setBackground(Color.black);
+        setForeground(Color.MAGENTA);
+        return this;
     }
 }
