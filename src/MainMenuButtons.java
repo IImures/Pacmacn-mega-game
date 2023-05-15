@@ -35,12 +35,8 @@ public class MainMenuButtons extends JPanel {
         score.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                JPanel scoreMenu = new ScoreMenu(window).getScoreMenu();
-                window.remove(mainPanel);
-                window.repaint();
-                window.add(scoreMenu);
-                window.setSize(new Dimension(640,480));
-
+                window.setVisible(false);
+                SwingUtilities.invokeLater(()->new ScoreMenu(window));
             }
         });
 

@@ -1,0 +1,11 @@
+Player: Player, score: 50 lives left: 3
+Player: Player Unknown, score: 50 lives left: 3
+Player: WOW, score: 30 lives left: 3
+Player: Waw, score: 40 lives left: 3
+Player: LOL, score: 50 lives left: 3
+Player: Mama, score: 50 lives left: 3
+Player: Player Unknown, score: 50 lives left: 3
+Player: psps, score: 50 lives left: 3
+Player: qwfqrf, score: 40 lives left: 3
+Player: asfdwqf, score: 40 lives left: 3
+Player: Player Unknown, score: 20 lives left: 3
