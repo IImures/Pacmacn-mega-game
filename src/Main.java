@@ -8,7 +8,7 @@ public class Main extends JFrame {
         add(new MenuWindow(this).getMainPanel());
 
         pack();
-        setResizable(true);
+        setResizable(false);
         setLocationRelativeTo(null);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setVisible(true);

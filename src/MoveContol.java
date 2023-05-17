@@ -1,12 +1,13 @@
-
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 
 public class MoveContol extends KeyAdapter {
 
+    private GameWindow window;
     private Entity pacman;
 
-    public MoveContol(Entity ent){
+    public MoveContol(Entity ent, GameWindow window){
+        this.window = window;
         pacman = ent;
     }
 
@@ -20,24 +21,23 @@ public class MoveContol extends KeyAdapter {
         int key = e.getKeyCode();
 
         if(key == KeyEvent.VK_A){
-            System.out.println("A");
             pacman.setxVelocity(-1);
             pacman.setyVelocity(0);
         }
         if(key == KeyEvent.VK_D){
-            System.out.println("D");
             pacman.setxVelocity(1);
             pacman.setyVelocity(0);
         }
         if(key == KeyEvent.VK_W){
-            System.out.println("W");
             pacman.setxVelocity(0);
             pacman.setyVelocity(-1);
         }
         if(key == KeyEvent.VK_S){
-            System.out.println("S");
             pacman.setxVelocity(0);
             pacman.setyVelocity(1);
+        }
+        if (e.isControlDown() && e.isShiftDown() && key == KeyEvent.VK_Q) {
+            window.endGame();
         }
     }
 

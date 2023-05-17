@@ -22,31 +22,6 @@ public class MazeMaker {
         makeFiledAndWalls();
         makePath();
 
-//        Point current = new Point(1, 1);
-//        while (visited.size() != 1000){
-//            Point next = checkNext(current);
-//            if (next != null) {
-//                int x = (current.x + next.x) / 2;
-//                int y = (current.y + next.y) / 2;
-//                maze[x][y] = 1;
-//
-//                visited.add(current);
-//                current = next;
-//                maze[current.x][current.y] = 1;
-//
-//            } else if (!visited.isEmpty()) {
-//                current = visited.get(visited.size() - 1);
-//            }
-//
-//
-//        }
-        //show maze
-        for(int i = 0; i < height; i++){
-            for(int j = 0; j < width; j++){
-                System.out.print(maze[i][j] + " ");
-            }
-            System.out.println();
-        }
         return maze;
     }
 
@@ -96,14 +71,14 @@ public class MazeMaker {
 
     private Point checkNext(Point current) {
 
-        final int n = 4; // number of neighbors
+        final int n = 4;
 
-        // the options of cells
+
         Point[] options = { new Point(current.x, current.y + 1), new Point(current.x, current.y - 1),
                 new Point(current.x + 1, current.y), new Point(current.x - 1, current.y) };
 
-        boolean[] goodIndices = new boolean[n]; // the options
-        int nGood = 0; // number of good
+        boolean[] goodIndices = new boolean[n];
+        int nGood = 0;
 
         for (int i = 0; i < n; i++) {
             Point c = options[i];
@@ -116,21 +91,20 @@ public class MazeMaker {
         }
 
         if (nGood == 0)
-            return null; // if there are no neighbors
+            return null;
 
         int rand = (int) (Math.random() * n);
         while (!goodIndices[rand]) {
             rand = (int) (Math.random() * n);
         }
 
-        return options[rand]; // return the random neighbor
+        return options[rand];
 
     }
 
     private boolean hasNext(Point current){
-        final int n = 4; // number of neighbors
+        final int n = 4;
 
-        // the options of cells
         Point[] options = { new Point(current.x, current.y + 2), new Point(current.x, current.y - 2),
                 new Point(current.x + 2, current.y), new Point(current.x - 2, current.y) };
 
@@ -143,25 +117,4 @@ public class MazeMaker {
         }
         return false;
     }
-
-
-//    private boolean r_findRoute(Station station, Station destiny, ArrayList<Station> history){
-//        for(Map.Entry<Station, Double> entry : station.getConnections().entrySet()){
-//            if(entry.getKey().getConnections().containsKey(destiny) || entry.getKey().equals(destiny)){
-//                Route.add(entry.getKey());
-//                return true;
-//            }
-//            if(!history.contains(entry.getKey())){
-//                history.add(entry.getKey());
-//                if(r_findRoute(entry.getKey(), destiny, history)){
-//                    Route.add(entry.getKey());
-//                    return true;
-//                }
-//            }
-//        }
-//        return false;
-//    }
-
-
-
 }

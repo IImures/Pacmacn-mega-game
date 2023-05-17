@@ -49,3 +49,21 @@ Attempt 1: Score: 10, Time: 1
 Attempt 2: Score: 300, Time: 18
 Attempt 3: Score: 100, Time: 6
 ---======---
+
+---===Player: fff===---
+Attempt 1: Score: 320, Time: 37
+Attempt 2: Score: 100, Time: 5
+Attempt 3: Score: 140, Time: 7
+---======---
+
+---===Player: dsd===---
+Attempt 1: Score: 10, Time: 1
+Attempt 2: Score: 90, Time: 5
+Attempt 3: Score: 40, Time: 3
+---======---
+
+---===Player: s29409===---
+Attempt 1: Score: 270, Time: 12
+Attempt 2: Score: 20, Time: 1
+Attempt 3: Score: 730, Time: 54
+---======---

@@ -8,7 +8,7 @@ public class MenuWindow extends JPanel {
 
     public MenuWindow(JFrame window){
         this.window = window;
-        ImageIcon img = new ImageIcon("img/MainMenuBG.jpg");
+        ImageIcon img = new ImageIcon("img/MainBG.png");
         mainPanel = new JLabel(img){
             public void paintComponent(Graphics g) {
                 g.drawImage(img.getImage(), 0, 0, getWidth(), getHeight(), null);// draw the image
@@ -21,12 +21,6 @@ public class MenuWindow extends JPanel {
         gbc.gridwidth = GridBagConstraints.REMAINDER;
         gbc.anchor = GridBagConstraints.NORTH;
 
-        JLabel title = new JLabel("PACMAN MEGAGAME");
-        title.setFont(new Font("Chalkboard", Font.BOLD,27));
-        title.setForeground(Color.magenta);
-        title.setPreferredSize(new Dimension(275,50));
-
-        mainPanel.add(title, gbc);
         new MainMenuButtons(mainPanel, window);
 
         mainPanel.setPreferredSize(new Dimension(640,480));

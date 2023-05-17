@@ -1,8 +1,7 @@
 import javax.swing.*;
-import javax.swing.event.ListSelectionListener;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.io.File;
 import java.io.IOException;
 import java.util.Scanner;
@@ -10,7 +9,6 @@ import java.util.Vector;
 
 public class ScoreMenu extends JFrame {
 
-    private JPanel scoreMenu;
     private JFrame window;
     private Vector<String> scoreList = new Vector<>();
     private JList list;
@@ -30,15 +28,16 @@ public class ScoreMenu extends JFrame {
         setLayout(new BorderLayout());
         readScore();
 
-        exit = new JButton("Return");
-        exit.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                setVisible(false);
-                window.setVisible(true);
-                window.setSize(680, 480);
+        addKeyListener(new ExitComb(this));
+        setFocusable(true);
 
-            }
+        exit = new JButton("Return");
+        exit.setFocusable(false);
+        exit.addActionListener(e -> {
+            setVisible(false);
+            window.setVisible(true);
+            window.setSize(680, 480);
+
         });
 
         listPanel = new JPanel();
@@ -46,15 +45,16 @@ public class ScoreMenu extends JFrame {
         list = new JList<>(scoreList);
         list.setCellRenderer(new MyListCellRenderer());
         list.setOpaque(false);
-        //list.setForeground(Color.MAGENTA);
-        //list.setFont(list.getFont().deriveFont(16f));
+        list.setFocusable(false);
         scrollPane = new JScrollPane(list);
         scrollPane.setOpaque(false);
+        scrollPane.setFocusable(false);
         scrollPane.setPreferredSize(new Dimension(320, getHeight() - (exit.getHeight()*2 + 5)));
         scrollPane.setBorder(BorderFactory.createEmptyBorder());
         add(exit, BorderLayout.PAGE_END);
         listPanel.add(scrollPane);
         listPanel.setOpaque(false);
+        listPanel.setFocusable(false);
         add(listPanel,BorderLayout.CENTER);
         setVisible(true);
         repaint();
@@ -73,8 +73,10 @@ public class ScoreMenu extends JFrame {
         }
     }
 
-    public JPanel getScoreMenu(){
-        return scoreMenu;
+    public void exit(){
+        dispose();
+        setVisible(false);
+        window.setVisible(true);
     }
 
     @Override
@@ -83,6 +85,7 @@ public class ScoreMenu extends JFrame {
         scrollPane.setPreferredSize(new Dimension(320, getHeight() - (exit.getHeight()*2 + 5) ));
     }
 }
+
 
 class MyListCellRenderer extends JLabel implements ListCellRenderer{
 
@@ -98,5 +101,31 @@ class MyListCellRenderer extends JLabel implements ListCellRenderer{
         setBackground(Color.black);
         setForeground(Color.MAGENTA);
         return this;
+    }
+}
+
+class ExitComb implements KeyListener{
+    private ScoreMenu window;
+
+    public ExitComb(ScoreMenu window) {
+        this.window = window;
+    }
+
+    @Override
+    public void keyTyped(KeyEvent e) {
+
+    }
+
+    @Override
+    public void keyPressed(KeyEvent e) {
+        int key = e.getKeyCode();
+        if (e.isControlDown() && e.isShiftDown() && key == KeyEvent.VK_Q) {
+            window.exit();
+        }
+    }
+
+    @Override
+    public void keyReleased(KeyEvent e) {
+
     }
 }

@@ -1,21 +1,18 @@
 import javax.swing.*;
 import javax.swing.table.*;
 import java.awt.*;
-import java.awt.event.ActionListener;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
 import java.awt.event.KeyListener;
-import java.util.ArrayList;
 
 
 public class Level extends JPanel {
-    private Image icon = new ImageIcon("img/heart.png").getImage().getScaledInstance(25,25,Image.SCALE_DEFAULT);
-    private int wight = 16;
-    private int height = 16;
+    private int wight;
+    private int height;
     private int BLOCK_SIZE = 32;
 
     private Pacman pacman;
-    private Ghost[] ghosts = new Ghost[4];
+    private final Ghost[] ghosts = new Ghost[4];
     private int lives;
     private JLabel score;
     private JLabel time;
@@ -26,9 +23,15 @@ public class Level extends JPanel {
 
     private AbstractTableModel abstractTableModel;
     private Tile[] tiles = new Tile[3];
+    private PowerUp powerUpIcon;
+    private Thread powerUp;
+    private Thread timer;
+    private Thread changingIcon;
     private Thread gameThread;
     private Thread[] ghostThreads = new Thread[4];
     private volatile boolean isAlive = true;
+    private double speed = 1;
+    private double ghostsSpeed = 1;
     private JTable boardData;
     private int[][] maze;
     private KeyListener moveControl;
@@ -36,15 +39,17 @@ public class Level extends JPanel {
     private GameWindow window;
 
     private String[] ghostsImg = new String[]{
-            "img/MAD.png",
-            "img/PJC.png",
-            "img/PJC.png",
-            "img/MAD.png"
+            "img/PJC1.png",
+            "img/MAD1.png",
+            "img/PPJ1.png",
+            "img/GUI1.png"
     };
 
 
-    public Level(GameWindow window){
+    public Level(GameWindow window, int wight, int height){
         this.window = window;
+        this.wight = wight;
+        this.height = height;
         setLayout(new BorderLayout());
         addComponentListener(new ComponentListener() {
             @Override
@@ -68,7 +73,6 @@ public class Level extends JPanel {
 
             }
         });
-        //addKeyListener(new QuitMenu(this));
         maze = new MazeMaker(height, wight).makeMaze();
         loadTiles();
         lives = 3;
@@ -76,21 +80,18 @@ public class Level extends JPanel {
 
 
         makeBoard();
-//        boardData.setValueAt(ghosts[0], 6,6);
-//        boardData.setValueAt(ghosts[1], 7,7);
+
         placePacman();
-        moveControl = new MoveContol(pacman);
+        moveControl = new MoveContol(pacman, window);
         addKeyListener(moveControl);
         placeGhosts();
 
 
         add(livesPanel,BorderLayout.PAGE_END);
 
-        //setFocusable(true);
         setFocusable(true);
 
         startGame();
-        //test();
 
     }
 
@@ -107,10 +108,7 @@ public class Level extends JPanel {
         boardData.setShowGrid(false);
 
 
-        //board.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
-
         boardData.setRowHeight(BLOCK_SIZE);
-        //boardData.setMinimumSize(new Dimension(10,10));
 
         TableColumnModel columnModel = boardData.getColumnModel();
         for(int i = 0; i < boardData.getColumnCount(); i++){
@@ -120,10 +118,9 @@ public class Level extends JPanel {
             column.setPreferredWidth(BLOCK_SIZE);
         }
 
-        //boardData.setBorder(BorderFactory.createLineBorder(Color.GREEN));
         boardData.setBackground(Color.black);
         translateMaze();
-        //boardPanel.add(pacman);
+
         boardPanel.add(boardData);
         boardPanel.setFocusable(false);
         boardData.setFocusable(false);
@@ -147,11 +144,11 @@ public class Level extends JPanel {
         tiles[0] = new Tile("img/Tile.png", true, false);
         tiles[1] = new Tile("img/WhiteDot.png", false, true);
         tiles[2] = new Tile("img/Black.png", false, false);
+        powerUpIcon = new PowerUp("img/PowerUP.png", false, true);
     }
 
     private void makeLives(){
         livesPanel = new JPanel();
-        livesPanel.addKeyListener(new QuitMenu(this));
         livesPanel.setFocusable(false);
         Image icon = new ImageIcon("img/heart.png").getImage().getScaledInstance(32,32,Image.SCALE_SMOOTH);
         ImageIcon heart = new ImageIcon(icon);
@@ -169,7 +166,6 @@ public class Level extends JPanel {
         time = new JLabel("0");
         livesPanel.add(time);
         livesPanel.repaint();
-
     }
 
     public void resize() {
@@ -193,8 +189,9 @@ public class Level extends JPanel {
                 column.setPreferredWidth(BLOCK_SIZE);
             }
             pacman.reScale(BLOCK_SIZE);
-        for (Ghost ghost : ghosts) ghost.reScale(BLOCK_SIZE);
-        for (Tile tile : tiles) tile.reScale(BLOCK_SIZE);
+          for (Ghost ghost : ghosts) ghost.reScale(BLOCK_SIZE);
+          for (Tile tile : tiles) tile.reScale(BLOCK_SIZE);
+          powerUpIcon.reScale(BLOCK_SIZE);
     }
 
     private void placePacman(){
@@ -203,7 +200,7 @@ public class Level extends JPanel {
                 int rand = (int)(Math.random() * wight * height + 1);
                 Object ent = boardData.getValueAt(y, x);
                 if(rand == wight * height && ent instanceof Tile && ((Tile)ent).getIsEatable()){
-                    pacman = new Pacman("img/pacman.png", y, x);
+                    pacman = new Pacman("img/STU1.png", y, x);
                 }
             }
         }
@@ -214,19 +211,12 @@ public class Level extends JPanel {
 
         int count = 0;
 
-
         for(int i = 0; i < ghosts.length; i++){
             while (ghosts[i] == null){
                 placeGhost(i, count);
             }
             count++;
         }
-
-        for(Ghost gh : ghosts){
-            System.out.println(gh);
-        }
-
-
     }
 
     private void placeGhost(int index, int count){
@@ -245,41 +235,109 @@ public class Level extends JPanel {
     public void startGame() {
         isAlive = true;
         moveGhosts();
-        Thread timer = new Thread(()->{
-           while (isAlive){
-               time.setText(String.valueOf((Integer.parseInt(time.getText()) + 1)));
+        setPowerUp();
+        timer = new Thread(()->{
+           while (true){
                try {
+                   if(!isAlive) {
+                       Thread.sleep(10);
+                       continue;
+                   }
+                   time.setText(String.valueOf((Integer.parseInt(time.getText()) + 1)));
                    Thread.sleep(1000);
                } catch (InterruptedException e) {
-                   throw new RuntimeException(e);
+                   System.out.println("Error in timer");
                }
            }
         });
+
+        changingIcon = new Thread(()->{
+            while (true) {
+                try {
+                    pacman.setReScaled(BLOCK_SIZE, "img/STU1.png");
+                    ghosts[0].setReScaled(BLOCK_SIZE, "img/PJC1.png");
+                    ghosts[1].setReScaled(BLOCK_SIZE, "img/MAD1.png");
+                    ghosts[2].setReScaled(BLOCK_SIZE, "img/PPJ1.png");
+                    ghosts[3].setReScaled(BLOCK_SIZE, "img/GUI1.png");
+                    Thread.sleep(500);
+                    pacman.setReScaled(BLOCK_SIZE, "img/STU2.png");
+                    ghosts[0].setReScaled(BLOCK_SIZE, "img/PJC2.png");
+                    ghosts[1].setReScaled(BLOCK_SIZE, "img/MAD2.png");
+                    ghosts[2].setReScaled(BLOCK_SIZE, "img/PPJ2.png");
+                    ghosts[3].setReScaled(BLOCK_SIZE, "img/GUI2.png");
+                    Thread.sleep(500);
+                } catch (InterruptedException ex) {
+                    System.out.println("Error while changing icons");
+                }
+            }
+        });
+
         gameThread = new Thread(()->{
             try {
-                while (isAlive) {
+                while (true) {
+
+                    if(!isAlive) {
+                        try {
+                            Thread.sleep(10);
+                            continue;
+                        } catch (InterruptedException e) {
+                            System.out.println("Error in gameThread");
+                        }
+                    }
 
                     checkForWin();
-
                     movePacman();
 
                     livesPanel.repaint();
                     boardData.repaint();
                     boardPanel.repaint();
-                    Thread.sleep(500);
+                    Thread.sleep((long) (500 * speed));
                 }
             } catch (InterruptedException e) {
                 System.out.println("Stop Game");
             }catch (NullPointerException ex){
-                isAlive = false;
-                System.out.println("Hujnia");
+                ex.getStackTrace();
             }
         });
+        changingIcon.start();
         for(Thread th : ghostThreads) th.start();
         timer.start();
         gameThread.start();
-
+        powerUp.start();
     }
+
+    private void setPowerUp(){
+        powerUp = new Thread(()->{
+            try{
+                while (true){
+                    if(!isAlive) {
+                        Thread.sleep(10);
+                        continue;
+                    }
+                    Thread.sleep(5000);
+                    System.out.println("PowerUP");
+                    int rand = (int)(Math.random() * 4) + 1;
+                    if(rand > 0)
+                        makePowerUp();
+
+                }
+            }catch (InterruptedException ex){
+                System.out.println("Error in main powerUP");
+            }
+        });
+    }
+
+    private void makePowerUp(){
+        int rand = (int)(Math.random() * 4);
+        int xVel = ghosts[rand].getxVelocity();
+        int yVel = ghosts[rand].getyVelocity();
+        Point p = ghosts[rand].getPosition();
+        Object tmpO = boardData.getValueAt(p.y - yVel, p.x - xVel);
+        if( tmpO instanceof Tile && !((Tile)tmpO).getIsSolid())
+            boardData.setValueAt(powerUpIcon, p.y - yVel, p.x - xVel);
+        repaint();
+    }
+
     private void checkForWin(){
         for(int i = 0; i < wight; i++){
             for(int j = 0; j < height; j++){
@@ -294,17 +352,22 @@ public class Level extends JPanel {
         for(int i = 0; i < ghosts.length; i++){
             Ghost ghost = ghosts[i];
             System.out.println(i);
-            int timeToSleep = 400 - (i * 100);
             ghost.setyVelocity(0);
             ghost.setxVelocity(1);
             ghostThreads[i] = new Thread(()->{
-                while (isAlive) {
+                while (true) {
+                    if(!isAlive) {
+                        try {
+                            Thread.sleep(10);
+                            continue;
+                        } catch (InterruptedException e) {
+                            System.out.println("Error in moving ghosts");
+                        }
+                    }
                     int tmp_X = ghost.getxVelocity() + ghost.getPosition().x;
                     int tmp_Y = ghost.getyVelocity() + ghost.getPosition().y;
                     Object ent = boardData.getValueAt(tmp_Y, tmp_X);
                     if (ent instanceof Pacman) {
-                        //died();
-                        //isAlive = false;
                         died();
                     } else if (ent instanceof Tile && ((Tile) ent).getIsSolid() || ent instanceof Ghost) {
                         int rand = (int) (Math.random() * 4) + 1;
@@ -337,8 +400,9 @@ public class Level extends JPanel {
                     boardData.repaint();
                     boardPanel.repaint();
                     try {
-                        Thread.sleep(timeToSleep);
+                        Thread.sleep((long) (400 * ghostsSpeed));
                     } catch (InterruptedException e) {
+                        e.getStackTrace();
                         ghost.setxVelocity(0);
                         ghost.setyVelocity(0);
                     }
@@ -347,15 +411,77 @@ public class Level extends JPanel {
         }
     }
 
+    private void activatePowerUp(){
+        int rand = (int)(Math.random() * 5) + 1;
+        switch (rand){
+            case 1 -> score.setText(String.valueOf((Integer.parseInt(score.getText()) + 100)));
+            case 2 ->{
+                Thread speedP = new Thread(()->{
+                    speed = 0.75;
+                    try{
+                        Thread.sleep(5000);
+                        speed = 1;
+                    }catch (InterruptedException ex){
+                        System.out.println("Error in powerUP 2");
+                    }
+                });
+                speedP.start();
+            }
+            case 3 ->{
+                Thread speedP = new Thread(()->{
+                    ghostsSpeed = 0.75;
+                    try{
+                        Thread.sleep(5000);
+                        ghostsSpeed = 1;
+                    }catch (InterruptedException ex){
+                        System.out.println("Error in powerUP 3");
+                    }
+                });
+                speedP.start();
+            }
+            case 4 ->{
+                Thread speedP = new Thread(()->{
+                    speed = 1.2;
+                    try{
+                        Thread.sleep(5000);
+                        speed = 1;
+                    }catch (InterruptedException ex){
+                        System.out.println("Error in powerUP 4");
+                    }
+                });
+                speedP.start();
+            }
+            case 5 ->{
+                Thread speedP = new Thread(()->{
+                    ghostsSpeed = 10;
+                    try{
+                        Thread.sleep(5000);
+                        ghostsSpeed = 1;
+                    }catch (InterruptedException ex){
+                        System.out.println("Error in powerUP 5");
+                    }
+                });
+                speedP.start();
+            }
+        }
+
+    }
+
     private void movePacman(){
         int tmp_X = pacman.getxVelocity() + pacman.getPosition().x;
         int tmp_Y = pacman.getyVelocity() + pacman.getPosition().y;
         Object ent = boardData.getValueAt(tmp_Y, tmp_X);
         if(ent instanceof Ghost){
-            //died();
-            //isAlive = false;
             died();
-        } else if(ent instanceof Tile && ((Tile)ent).getIsSolid()){
+        }
+        else if(ent instanceof PowerUp){
+            activatePowerUp();
+            boardData.setValueAt(tiles[2], pacman.getPosition().y, pacman.getPosition().x);
+            pacman.getPosition().x = pacman.getxVelocity() + pacman.getPosition().x;
+            pacman.getPosition().y = pacman.getyVelocity() + pacman.getPosition().y;
+            boardData.setValueAt(pacman, pacman.getPosition().y, pacman.getPosition().x);
+        }
+        else if(ent instanceof Tile && ((Tile)ent).getIsSolid()){
             pacman.setyVelocity(0);
             pacman.setxVelocity(0);
         } else if(ent instanceof Tile && ((Tile)ent).getIsEatable()){
@@ -370,7 +496,6 @@ public class Level extends JPanel {
             pacman.getPosition().y = pacman.getyVelocity() + pacman.getPosition().y;
             boardData.setValueAt(pacman, pacman.getPosition().y, pacman.getPosition().x);
         }
-
     }
 
     private void winOrLose(boolean winOrLose){
@@ -381,9 +506,7 @@ public class Level extends JPanel {
         if(winOrLose)
             window.setMessage("God Job! input your name and press Enter");
         else
-            window.setMessage("Nice attempt! Input your name and press Enter");
-        window.setScore(score.getText());
-        window.setLives(lives);
+            window.setMessage("ITN wasn't done! Input your name and press Enter");
 
         window.setScoreTable(scoreTable);
         window.setTimeTable(timeTable);
@@ -438,13 +561,15 @@ public class Level extends JPanel {
             winOrLose(false);
             return;
         }
+
         makeLives();
 
         makeBoard();
-        //placePacman();
+
         replacePacman(false);
         replaceGhosts();
-        //placeGhosts();
+        repaint();
+
 
         boardData.setValueAt(pacman, pacman.getPosition().y, pacman.getPosition().x);
         score.setText(String.valueOf((Integer.parseInt(score.getText()) + 10)));
@@ -457,11 +582,11 @@ public class Level extends JPanel {
         setSize(getWidth(), getHeight()+1);
 
         Thread timer = new Thread(()->{
-            int count = -3;
+            int count = -2;
             time.setText(count + "");
             while (count != 0){
                 try {
-                    Thread.sleep(10);
+                    Thread.sleep(1000);
                     time.setText(count + 1 + "");
                     count++;
                 } catch (InterruptedException e) {
@@ -471,6 +596,7 @@ public class Level extends JPanel {
             isAlive = true;
         });
         timer.start();
+
         try {
             timer.join();
         }catch (InterruptedException ex){
@@ -478,6 +604,15 @@ public class Level extends JPanel {
         }
     }
 
-
-
+    public void interruptAll(){
+        removeKeyListener(moveControl);
+        try {
+            for (Thread th : ghostThreads) th.interrupt();
+            gameThread.interrupt();
+            timer.interrupt();
+            changingIcon.interrupt();
+        }catch (NullPointerException ex){
+            System.out.println("Error in interruptAll");
+        }
+    }
 }
