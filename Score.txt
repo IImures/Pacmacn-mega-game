@@ -67,3 +67,9 @@ Attempt 1: Score: 270, Time: 12
 Attempt 2: Score: 20, Time: 1
 Attempt 3: Score: 730, Time: 54
 ---======---
+
+---===Player: S28409===---
+Attempt 1: Score: 80, Time: 14
+Attempt 2: Score: 240, Time: 15
+Attempt 3: Score: 280, Time: 12
+---======---

@@ -317,7 +317,7 @@ public class Level extends JPanel {
                     Thread.sleep(5000);
                     System.out.println("PowerUP");
                     int rand = (int)(Math.random() * 4) + 1;
-                    if(rand > 0)
+                    if(rand == 4)
                         makePowerUp();
 
                 }
@@ -500,8 +500,6 @@ public class Level extends JPanel {
 
     private void winOrLose(boolean winOrLose){
         removeAll();
-        gameThread = null;
-        ghostThreads = null;
 
         if(winOrLose)
             window.setMessage("God Job! input your name and press Enter");
