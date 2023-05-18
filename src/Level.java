@@ -315,7 +315,6 @@ public class Level extends JPanel {
                         continue;
                     }
                     Thread.sleep(5000);
-                    System.out.println("PowerUP");
                     int rand = (int)(Math.random() * 4) + 1;
                     if(rand == 4)
                         makePowerUp();
