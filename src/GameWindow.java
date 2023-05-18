@@ -63,7 +63,7 @@ public class GameWindow extends JFrame {
                         int height = Integer.parseInt(matcher.group(2));
                         System.out.println(wight);
                         System.out.println(height);
-                            if(wight < 10 || height < 10) {
+                            if(wight < 10 || height < 10 || wight > 100 || height > 100) {
                                 label.setText("Wrong format! Input (width)x(height)");
                                 tField.setText("");
                             }else{
